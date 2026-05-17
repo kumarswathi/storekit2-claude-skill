@@ -17,6 +17,7 @@ struct PaywallView: View {
     @EnvironmentObject private var subscriptions: SubscriptionManager
     @Environment(\.dismiss) private var dismiss
     @State private var selectedProduct: Product?
+    @State private var errorMessage: String?
 
     var body: some View {
         ScrollView {
@@ -24,6 +25,11 @@ struct PaywallView: View {
                 header
                 benefits
                 productList
+
+                if let errorMessage {
+                    errorBanner(errorMessage)
+                }
+
                 purchaseButton
                 footer
             }
@@ -83,14 +89,23 @@ struct PaywallView: View {
         }
     }
 
+    private func errorBanner(_ message: String) -> some View {
+        HStack(spacing: 8) {
+            Image(systemName: "exclamationmark.triangle.fill")
+                .foregroundStyle(.orange)
+            Text(message)
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+            Spacer()
+        }
+        .padding()
+        .background(Color.orange.opacity(0.1), in: RoundedRectangle(cornerRadius: 8))
+    }
+
     private var purchaseButton: some View {
         VStack(spacing: 12) {
             Button {
-                Task {
-                    guard let product = selectedProduct else { return }
-                    let success = await subscriptions.purchase(product)
-                    if success { dismiss() }
-                }
+                Task { await handlePurchase() }
             } label: {
                 Text("Subscribe")
                     .font(.headline)
@@ -123,6 +138,26 @@ struct PaywallView: View {
             .font(.caption)
         }
         .padding(.bottom, 24)
+    }
+
+    // MARK: - Actions
+
+    private func handlePurchase() async {
+        guard let product = selectedProduct else { return }
+        errorMessage = nil
+
+        let result = await subscriptions.purchase(product)
+        switch result {
+        case .success:
+            dismiss()
+        case .userCancelled:
+            // Stay on paywall, no error needed
+            break
+        case .pending:
+            errorMessage = "Purchase is pending approval. You'll be notified when it completes."
+        case .failed(let error):
+            errorMessage = "Purchase failed: \(error.localizedDescription)"
+        }
     }
 }
 
