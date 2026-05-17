@@ -1,0 +1,66 @@
+{
+  "identifier" : "REPLACE-WITH-UUID",
+  "nonRenewingSubscriptions" : [],
+  "products" : [],
+  "settings" : {
+    "_failTransactionsEnabled" : false,
+    "_locale" : "en_US",
+    "_storefront" : "USA",
+    "_storeKitErrors" : []
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "REPLACE-WITH-GROUP-UUID",
+      "localizations" : [],
+      "name" : "{{SUBSCRIPTION_GROUP}}",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [],
+          "codeOffers" : [],
+          "displayPrice" : "4.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "REPLACE-WITH-UUID-1",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Pro features, billed monthly",
+              "displayName" : "Pro Monthly",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "{{PRODUCT_ID_MONTHLY}}",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Pro Monthly",
+          "subscriptionGroupID" : "REPLACE-WITH-GROUP-UUID",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [],
+          "codeOffers" : [],
+          "displayPrice" : "39.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "REPLACE-WITH-UUID-2",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Pro features, billed yearly",
+              "displayName" : "Pro Yearly",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "{{PRODUCT_ID_YEARLY}}",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "Pro Yearly",
+          "subscriptionGroupID" : "REPLACE-WITH-GROUP-UUID",
+          "type" : "RecurringSubscription"
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 4,
+    "minor" : 0
+  }
+}
