@@ -4,18 +4,29 @@ A Claude skill that scaffolds a complete StoreKit 2 auto-renewable subscription 
 
 Go from zero to a working purchase flow in about an hour, without reading Apple's StoreKit docs.
 
+## Why this exists
+
+There are excellent paid services for subscriptions — RevenueCat, Adapty, Glassfy — and they're the right call for most apps. But sometimes you want:
+
+- No third-party SDK in your binary
+- No backend service tracking your users
+- Direct StoreKit 2 because you understand the tradeoffs
+- A starting point you can read, modify, and own
+
+This skill scaffolds a working StoreKit 2 implementation you control, in roughly the same time it takes to onboard with a paid service — but with code that lives in your repo, that you fully understand, and that has zero ongoing cost.
+
+It's a starter, not a complete subscription stack. For production at scale you'll still want server-side receipt validation (via Apple's [App Store Server API](https://developer.apple.com/documentation/appstoreserverapi)) — but you can ship and earn revenue with what this generates today.
+
 ## What you get
 
-```
-YourApp/
-├── Subscriptions/
-│   ├── SubscriptionManager.swift   # products, purchase, entitlements
-│   ├── TransactionListener.swift   # handles updates from outside the app
-│   └── PaywallView.swift           # SwiftUI paywall, ready to customize
-└── Products.storekit               # local config for testing without sandbox
-```
+After running the skill, your project gets:
 
-Plus a checklist of App Store Connect steps and a gotchas doc covering the things that bite people in production (interrupted purchases, family sharing, sandbox renewal quirks, why `currentEntitlements` ≠ `Transaction.all`).
+- `Subscriptions/SubscriptionManager.swift` — products, purchase flow, entitlements
+- `Subscriptions/TransactionListener.swift` — handles updates from outside the app
+- `Subscriptions/PaywallView.swift` — SwiftUI paywall, ready to customize
+- `Products.storekit` — local config for testing without sandbox
+
+Plus a checklist of App Store Connect steps and a gotchas doc covering things that bite people in production (interrupted purchases, family sharing, sandbox renewal quirks, why `currentEntitlements` is different from `Transaction.all`).
 
 ## Requirements
 
@@ -27,34 +38,31 @@ Plus a checklist of App Store Connect steps and a gotchas doc covering the thing
 
 ### With Claude Code
 
-Clone into your skills directory:
+Clone into your skills directory, then in Claude Code, ask:
 
-```bash
-cd ~/.claude/skills
-git clone https://github.com/kumarswathi/storekit2-claude-skill.git
-```
-
-Then in Claude Code, just ask:
-
-> "Add StoreKit 2 subscriptions to this app — one monthly and one yearly tier."
+> Add StoreKit 2 subscriptions to this app — one monthly and one yearly tier.
 
 Claude will pick up the skill, ask you a few questions (bundle ID, product IDs, prices), and generate everything.
 
 ### Manually
 
-Even without Claude, this repo is a working reference implementation. Copy the files in `templates/` into your project, substitute the placeholders, and follow the checklist in `references/app-store-connect-checklist.md`.
+Even without Claude, this repo is a working reference implementation. Copy the files in the `templates/` folder into your project, substitute the placeholders, and follow the checklist in `references/app-store-connect-checklist.md`.
 
-## What's in v1
+## What is in v1
 
 - Auto-renewable subscriptions
 - Purchase flow with verification
+- `PurchaseResult` enum distinguishing success, user cancel, pending, and failure
 - Restore purchases
 - Entitlement checking
 - Transaction listener for out-of-app purchases (Ask to Buy, pending approvals)
-- Customizable SwiftUI paywall
+- Customizable SwiftUI paywall with error states
+- Unified `os.Logger` for production-grade logging
 - Local `.storekit` config
 
-## What's NOT in v1
+See `CHANGELOG.md` for the full version history.
+
+## What is NOT in v1
 
 - One-time purchases (consumables / non-consumables) — planned for v2
 - Server-side receipt validation code — planned for v2
@@ -65,10 +73,11 @@ Even without Claude, this repo is a working reference implementation. Copy the f
 ## Contributing
 
 Issues and PRs welcome. Areas where help is especially useful:
+
 - UIKit version of the templates
 - Server-side validation example
 - Additional paywall designs
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT — see the `LICENSE` file.
